@@ -21,6 +21,22 @@ This repository is strictly organized to maintain flow and separation of concern
 - **`30-resources/` 📚**: The library. Reusable assets, templates, standard operating procedures (SOPs), and shared scripts.
 - **`40-archives/` 🗄️**: Cold storage. Completed projects, abandoned ideas, and outdated documents.
 
+## 🆚 Architecture Philosophy: AIandI vs. Karpathy's LLM Wiki
+
+While building this Second Brain, a critical design choice was made: **Why not strictly follow Andrej Karpathy's pure 3-folder "LLM Wiki" architecture (`raw/`, `wiki/`, `outputs/`)?**
+
+The answer is that `AIandI` is a **superset** of the LLM Wiki concept, designed not just for knowledge, but for **engineering and automation**.
+
+| Feature | Karpathy's LLM Wiki | AIandI (P.A.R.A + GitOps) |
+| :--- | :--- | :--- |
+| **Primary Goal** | Knowledge synthesis & Q&A. | Knowledge synthesis **+ Engineering + Infrastructure Automation**. |
+| **The "Source of Truth"** | `raw/` | **`01-raw/`** (We strictly adopt this immutable data lake concept). |
+| **The "Compiled" Knowledge** | `wiki/` | **`20-areas/`** (domain knowledge) & **`30-resources/`** (reusable SOPs and scripts). |
+| **Execution & Action** | ❌ Minimal (static markdown). | ✅ **`10-projects/`** (active code) & **`infrastructure/`** (GitOps IaC). |
+| **AI Instructions** | `CLAUDE.md` | **`.ai/context.md`** & **`.ai/skills/`** (giving AI the "hands" to execute tasks like secret management). |
+
+If `AIandI` were only a Wiki, it would be a passive library. By combining the immutable `01-raw` knowledge ingestion with the actionable P.A.R.A. framework and AI Skills, this repository becomes a full-stack **Operations Center**. The AI reads the raw data, compiles the wiki, *and* helps write the code to deploy the infrastructure.
+
 ## 🤖 The AI Nervous System
 
 This workspace is designed to be deeply understood by AI agents.
