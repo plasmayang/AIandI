@@ -18,3 +18,4 @@ To assist the user in managing their knowledge, writing code, provisioning infra
 - Scripts: Bash, Python
 - Secrets: Doppler
 - Networking: Tailscale
+- CAD Kernel: C++
