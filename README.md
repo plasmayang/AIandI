@@ -1,89 +1,45 @@
-# 🤖 Agentic GitOps Operations Center
+# 🧠 AIandI: My Second Brain & Operations Center
 
-> **Building a portable, stateless, and absolute zero-trust Agentic GitOps Operations Center.**
+> **The central nervous system for my ideas, knowledge, projects, and infrastructure.**
 
-This repository is a standardized framework for managing infrastructure through AI agents (e.g., `gemini-cli`, `claude-code`, `opencode`) and deterministic scripts. It follows a "Zero-Leak" philosophy where credentials never touch the disk and environment state is ephemeral.
+Welcome to `AIandI` (AI and I). This repository is a unified workspace designed to be a true "Second Brain" augmented by Artificial Intelligence. It is built on a hybrid architecture combining the **P.A.R.A. Method** (Projects, Areas, Resources, Archives) with **Modern Monorepo** engineering principles.
 
----
-
-## 🤝 Agent Onboarding (The Handshake)
-
-If you are an AI Agent assisting in this repository, follow these rules of engagement:
-
-1.  **Research First**: Always read the `docs/` and `src/` directories to understand the specific SOP (Standard Operating Procedure) for a task before suggesting or executing changes.
-2.  **No Secrets**: Never print, log, or commit API keys or tokens. Use the **Doppler** integration for all secret management.
-3.  **Deterministic Execution**: Prefer calling existing scripts in `src/` (Skills) over generating raw bash commands for critical infrastructure changes.
-4.  **Validate**: Always verify network connectivity (Tailscale) and credential status (Doppler) before performing remote operations.
+Here, ideas are captured, knowledge is distilled, code is written, and servers are provisioned—all facilitated by AI Copilots like Gemini.
 
 ---
 
-## 🏗️ Core Architecture
+## 🗂️ The P.A.R.A. Architecture
 
-This center is built on five pillars of secure, automated operations:
+This repository is strictly organized to maintain flow and separation of concerns:
 
-*   **🧠 Brain (Logic):** This GitHub Repository — The source of truth for SOPs, Skills, and IaC.
-*   **🦾 Body (Compute):** GitHub Codespaces — An ephemeral, containerized execution environment.
-*   **⚡ Nerves (Network):** [Tailscale](https://tailscale.com/) — Secure, peer-to-peer networking to reach any node globally.
-*   **❤️ Heart (Secrets):** [Doppler](https://www.doppler.com/) — Memory-only secret injection. No `.env` files allowed.
-*   **🤖 Hands (Execution):** AI Agents — Translating high-level intent into audited, scripted actions.
+- **`00-inbox/` 📥**: The raw intake. Unprocessed thoughts, clipped web pages, quick notes, and error logs.
+- **`01-raw/` 🥩**: Unprocessed materials. Content moved from inbox that needs categorization, formatting, or parsing before it can be developed.
+- **`02-ideas/` 💡**: The incubator. Brainstorming, project proposals, and concepts being explored with AI.
+- **`03-research/` 🔬**: Deep dives. Technical research, evaluations of new tools, and reading notes.
+- **`10-projects/` 🚀**: Active execution. Source code for active applications, scripts, or focused engineering tasks with a defined end goal.
+- **`20-areas/` 🌐**: Ongoing responsibilities. Long-term maintenance domains (e.g., HomeLab architecture, finance, health).
+- **`30-resources/` 📚**: The library. Reusable assets, templates, standard operating procedures (SOPs), and shared scripts.
+- **`40-archives/` 🗄️**: Cold storage. Completed projects, abandoned ideas, and outdated documents.
 
----
+## 🤖 The AI Nervous System
 
-## 🏁 Quick Start: The "Ignition" Sequence
+This workspace is designed to be deeply understood by AI agents.
 
-To initialize the operations center in a new environment:
-
-1.  **Bootstrap Secrets**:
-    ```bash
-    # Securely input your Doppler Service Token
-    export DOPPLER_TOKEN=$(read -s -p "🔑 Enter Doppler Service Token: " token && echo $token)
-    doppler secrets verify
-    ```
-
-2.  **Establish Network**:
-    ```bash
-    # Start Tailscale and connect to the private mesh
-    sudo tailscaled > /dev/null 2>&1 &
-    TAILSCALE_KEY=$(doppler secrets get TAILSCALE_AUTH_KEY --plain)
-    sudo tailscale up --authkey=${TAILSCALE_KEY} --hostname=ops-center --accept-routes
-    ```
-
-3.  **Initialize AI Agent**:
-    ```bash
-    # Run your preferred agent with Doppler secret injection
-    doppler run -- gemini-cli
-    # OR
-    doppler run -- claude
-    ```
+- **`.ai/`**: The AI's context engine. Contains custom system instructions, prompt templates, and specialized agent **skills** (e.g., `.ai/skills/doppler-manager`).
+- **`infrastructure/`**: The GitOps engine. Declarative Infrastructure as Code (IaC) and the original Agentic Operations Center (see `infrastructure/README.md`).
+- **`.github/`**: Automation pipelines and workflows.
 
 ---
 
-## 📂 Repository Layout
+## 🤝 AI Collaboration Rules
 
-- `docs/`: **The Knowledge Base.** Architectural guides and SOPs for specific infrastructure scenarios (e.g., storage mapping, secret management).
-- `src/`: **The Skill Set.** Deterministic scripts and agent skill definitions.
-    - `doppler-manager/`: Specialized skill for handling secret lifecycles.
-    - `scripts/`: General automation and maintenance scripts.
-- `.devcontainer/`: IaC for the "Body" (the execution environment).
+If you are an AI agent assisting in this repository:
 
----
-
-## 🛡️ Zero-Trust Guardrails
-
-- **Stateless Environment**: The execution environment is destroyed after use. No persistent local data.
-- **Just-in-Time Injection**: Secrets are injected into process memory at runtime via `doppler run`.
-- **White-Box Safety**: High-risk actions (reboots, deletions, network changes) must be backed by a "White-Box" script in `src/` to prevent LLM hallucinations.
+1. **Context is King**: Always check `.ai/context.md` (if it exists) to understand the current preferences and state of the workspace.
+2. **Respect the Flow**: Ensure new content is routed to the correct P.A.R.A. directory. Don't pollute `10-projects` with raw ideas; put them in `02-ideas` first.
+3. **Keep it Clean**: Suggest moving stagnant items to `40-archives` and processing the `00-inbox` regularly.
+4. **GitOps Supremacy**: When modifying infrastructure, rely on the SOPs in `30-resources/sops/` and the IaC in `infrastructure/`. Never leak secrets.
 
 ---
 
-## 🛠️ Contributing a New Skill
-
-1.  **Write the SOP**: Document the procedure in `docs/`.
-2.  **Code the Script**: Implement the deterministic logic in `src/`.
-3.  **Define the Skill**: For agents like `gemini-cli`, add the task definition to the relevant `SKILL.md`.
-
----
-
-## 📜 License
-
-This project is licensed under the [LICENSE](LICENSE) terms.
+*This is a living system. It evolves as I do.*
