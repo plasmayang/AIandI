@@ -12,8 +12,8 @@ Here, ideas are captured, knowledge is distilled, code is written, and servers a
 
 This repository is strictly organized to maintain flow and separation of concerns:
 
-- **`00-inbox/` 📥**: The raw intake. Unprocessed thoughts, clipped web pages, quick notes, and error logs.
-- **`01-raw/` 🥩**: Unprocessed materials. Content moved from inbox that needs categorization, formatting, or parsing before it can be developed.
+- **`00-inbox/` 📥**: The raw intake. Transient landing zone for quick captures and unstructured thoughts.
+- **`01-raw/` 🥩**: The immutable source of truth (Karpathy's LLM Wiki concept). A permanent, read-only data lake for original articles, research papers, logs, and unedited notes. The AI compiles structured knowledge from here but NEVER modifies these files.
 - **`02-ideas/` 💡**: The incubator. Brainstorming, project proposals, and concepts being explored with AI.
 - **`03-research/` 🔬**: Deep dives. Technical research, evaluations of new tools, and reading notes.
 - **`10-projects/` 🚀**: Active execution. Source code for active applications, scripts, or focused engineering tasks with a defined end goal.
