@@ -29,13 +29,35 @@ USERDATA_DIR="./AIandI-userdata"
 export USERDATA_REPO="$USERDATA_DIR"
 
 if [ ! -d "$USERDATA_DIR" ]; then
-    echo "📥 Cloning your private Second Brain data ($GH_USER/AIandI-userdata)..."
-    if gh repo clone "$GH_USER/AIandI-userdata" "$USERDATA_DIR" 2>/dev/null; then
-        echo "✅ Successfully cloned $USERDATA_DIR"
-    else
-        echo "❌ Failed to clone $GH_USER/AIandI-userdata."
-        echo "Please ensure the repository exists and you have access."
+    echo "📥 Fetching your repositories to find your Second Brain data..."
+    
+    # Fetch up to 100 repositories (name only) for the authenticated user
+    mapfile -t REPO_LIST < <(gh repo list --limit 100 --json name -q '.[].name')
+    
+    if [ ${#REPO_LIST[@]} -eq 0 ]; then
+        echo "❌ No repositories found for user @$GH_USER."
+        echo "Please create a private repository on GitHub to store your data."
         read -p "Press enter to continue without user data, or Ctrl+C to abort."
+    else
+        echo "Please select the repository that contains your private P.A.R.A data:"
+        
+        # Use select to create an interactive menu
+        PS3="Enter the number of your userdata repository (or press Ctrl+C to abort): "
+        select REPO_NAME in "${REPO_LIST[@]}"; do
+            if [ -n "$REPO_NAME" ]; then
+                SELECTED_REPO="$GH_USER/$REPO_NAME"
+                echo "📥 Cloning selected repository: $SELECTED_REPO..."
+                if gh repo clone "$SELECTED_REPO" "$USERDATA_DIR"; then
+                    echo "✅ Successfully cloned $SELECTED_REPO"
+                else
+                    echo "❌ Failed to clone $SELECTED_REPO."
+                    read -p "Press enter to continue without user data."
+                fi
+                break
+            else
+                echo "Invalid selection. Please try again."
+            fi
+        done
     fi
 else
     echo "✅ Private data directory already exists."
