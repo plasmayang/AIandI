@@ -15,7 +15,8 @@ sudo apt-get install -y doppler
 # 2. Install AI Copilot Tools
 echo "🧠 Installing AI Copilot Tools (@google/gemini-cli, claude-code)..."
 # Using npm from the devcontainer features (Node.js)
-sudo npm install -g @google/gemini-cli @anthropic-ai/claude-code
+# We use 'sudo env PATH=$PATH' because nvm installs npm in a path not available to the root user's secure_path
+sudo env PATH=$PATH npm install -g @google/gemini-cli @anthropic-ai/claude-code
 
 echo "-----------------------------------------------------------------"
 echo "✅ Environment Base Layer Installed."
