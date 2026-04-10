@@ -15,10 +15,14 @@ echo ""
 
 # 1. GitHub Authentication Check & User Data Sync
 echo "🔍 Checking GitHub Authentication..."
-if ! gh auth status &>/dev/null; then
-    echo "⚠️  GitHub CLI is not fully authenticated."
-    echo "Please authenticate now to allow cloning of your private userdata repository."
-    gh auth login --scopes "repo,workflow"
+
+# Detect if we are using the restricted GITHUB_TOKEN common in Codespaces
+if gh auth status 2>&1 | grep -q "GITHUB_TOKEN"; then
+    echo "⚠️  Detected restricted Codespace token. You might not see your private repositories."
+    read -p "Do you want to re-authenticate to access ALL your private repos? (y/N): " REAUTH
+    if [[ "$REAUTH" =~ ^[Yy]$ ]]; then
+        gh auth login --scopes "repo,workflow"
+    fi
 fi
 
 # Fetch the current authenticated GitHub username
@@ -28,42 +32,53 @@ echo "✅ Authenticated as GitHub user: @$GH_USER"
 USERDATA_DIR="./AIandI-userdata"
 export USERDATA_REPO="$USERDATA_DIR"
 
-if [ ! -d "$USERDATA_DIR" ]; then
+while [ ! -d "$USERDATA_DIR" ]; do
     echo "📥 Fetching your repositories to find your Second Brain data..."
     
-    # Fetch up to 100 repositories (name only) for the authenticated user
+    # Fetch repositories
     mapfile -t REPO_LIST < <(gh repo list --limit 100 --json name -q '.[].name')
     
     if [ ${#REPO_LIST[@]} -eq 0 ]; then
-        echo "❌ No repositories found for user @$GH_USER."
-        echo "Please create a private repository on GitHub to store your data."
-        read -p "Press enter to continue without user data, or Ctrl+C to abort."
-    else
-        echo "Please select the repository that contains your private P.A.R.A data:"
-        
-        # Use select to create an interactive menu
-        PS3="Enter the number of your userdata repository (or press Ctrl+C to abort): "
-        select REPO_NAME in "${REPO_LIST[@]}"; do
-            if [ -n "$REPO_NAME" ]; then
-                SELECTED_REPO="$GH_USER/$REPO_NAME"
-                echo "📥 Cloning selected repository: $SELECTED_REPO..."
-                if gh repo clone "$SELECTED_REPO" "$USERDATA_DIR"; then
-                    echo "✅ Successfully cloned $SELECTED_REPO"
-                else
-                    echo "❌ Failed to clone $SELECTED_REPO."
-                    read -p "Press enter to continue without user data."
-                fi
-                break
-            else
-                echo "Invalid selection. Please try again."
-            fi
-        done
+        echo "❌ No repositories found or access denied."
+        read -p "Press Enter to try 'gh auth login' or Ctrl+C to abort."
+        gh auth login --scopes "repo,workflow"
+        continue
     fi
-else
-    echo "✅ Private data directory already exists."
-    # Optionally pull latest
-    (cd "$USERDATA_DIR" && git pull --quiet origin main 2>/dev/null || true)
-fi
+
+    echo "Please select the repository that contains your private P.A.R.A data:"
+    PS3="Enter the number (or press Ctrl+C to abort): "
+    select REPO_NAME in "${REPO_LIST[@]}"; do
+        if [ -n "$REPO_NAME" ]; then
+            SELECTED_REPO="$GH_USER/$REPO_NAME"
+            
+            # Prevent users from selecting the engine repo itself
+            if [ "$REPO_NAME" == "AIandI" ] || [ "$REPO_NAME" == "homelab_sop" ]; then
+                echo "❌ Error: You selected the public 'AIandI' engine repo, which contains no data."
+                echo "Please select your PRIVATE userdata repository."
+                break
+            fi
+
+            echo "📥 Cloning selected repository: $SELECTED_REPO..."
+            if gh repo clone "$SELECTED_REPO" "$USERDATA_DIR"; then
+                # Validation: Check if it actually has P.A.R.A folders
+                if [ ! -d "$USERDATA_DIR/01-raw" ] && [ ! -d "$USERDATA_DIR/20-areas" ]; then
+                    echo "⚠️  Warning: The selected repo does not seem to contain P.A.R.A folders (01-raw, etc.)."
+                    read -p "Are you sure this is the right repo? (y/N): " CONFIRM_EMPTY
+                    if [[ ! "$CONFIRM_EMPTY" =~ ^[Yy]$ ]]; then
+                        rm -rf "$USERDATA_DIR"
+                        break
+                    fi
+                fi
+                echo "✅ Successfully cloned $SELECTED_REPO"
+            else
+                echo "❌ Failed to clone $SELECTED_REPO."
+            fi
+            break
+        else
+            echo "Invalid selection."
+        fi
+    done
+done
 
 # Link the folders
 echo "🔗 Linking P.A.R.A folders..."
