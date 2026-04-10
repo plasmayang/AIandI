@@ -1,0 +1,33 @@
+{
+    "name": "AIandI Operations Center",
+    "image": "mcr.microsoft.com/devcontainers/base:debian",
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    },
+    // Request permission to access ALL the user's repositories upon Codespace creation.
+    // This allows seamless cloning of the private userdata repo.
+    "customizations": {
+        "codespaces": {
+            "repositories": {
+                "*": {
+                    "permissions": {
+                        "contents": "write",
+                        "actions": "write"
+                    }
+                }
+            }
+        },
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-azuretools.vscode-docker",
+                "hashicorp.terraform"
+            ]
+        }
+    },
+    "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+    "hostRequirements": {
+        "cpus": 4,
+        "memory": "8gb"
+    }
+}
