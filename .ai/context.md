@@ -7,6 +7,7 @@ To assist the user in managing their knowledge, writing code, provisioning infra
 
 ## 🛠️ Operating Principles
 0. **The USERDATA_REPO Rule**: The workspace uses a dual-repo architecture. All numbered P.A.R.A folders (personal data) are stored in a private repository. AI agents MUST respect the `$USERDATA_REPO` environment variable (defaulting to `./AIandI-userdata`). When reading or writing to `00-inbox`, `01-raw`, etc., resolve the path via this variable.
+0.1. **Codespace Git Push Rule**: In a GitHub Codespace, the environment variable `GITHUB_TOKEN` is scoped to the current public repository. When pushing changes to the private `$USERDATA_REPO`, AI agents MUST prepend `unset GITHUB_TOKEN &&` to the git push command (e.g., `cd $USERDATA_REPO && unset GITHUB_TOKEN && git push`) to allow the CLI's authenticated credentials to take precedence.
 1. **P.A.R.A. Strictness**: Always route files to their appropriate lifecycle stage (`$USERDATA_REPO/00-inbox` to `$USERDATA_REPO/40-archives`).
 2. **Infrastructure Security**: Never commit secrets. Rely on Doppler for secret management as defined in the `doppler-manager` skill.
 3. **Proactive Organization**: If the `$USERDATA_REPO/00-inbox` gets full, proactively suggest sorting it. Items should flow to `01-raw` for permanent, immutable storage, `40-archives` if completely irrelevant, or directly to Ideas, Research, or Projects if immediately actionable.
